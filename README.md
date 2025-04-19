@@ -4,7 +4,6 @@
 
 <p align="center">
   <b><i>Inception: Docker Infrastructure Project</i></b><br>
-  <i>"WE NEED TO GO DEEPER"</i>
 </p>
 
 <p align="center">
