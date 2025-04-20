@@ -33,7 +33,7 @@ This project creates a small infrastructure using Docker containers with NGINX, 
 
 ### 📊 Flowchart
 
-[Flow Chart](https://github.com/senthilpoo10/coding-school-projects/inception/main/flowchart.png)
+[Flow Chart](https://github.com/coding-school-projects/inception/blob/main/flowchart.png)
 
 ### 📝 Required Configuration
 | File | Purpose |
