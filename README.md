@@ -31,29 +31,9 @@ This project creates a small infrastructure using Docker containers with NGINX, 
 
 ## 🏁 Getting Started
 
-### 🛠️ Installation & Usage
+### 📊 Flowchart
 
-1. Clone the repository:
-```bash
-git clone https://github.com/coding-school-projects/inception.git
-cd inception
-```
-
-2. Configure environment variables:
-```bash
-cp srcs/.env.example srcs/.env
-nano srcs/.env  # Edit with your credentials
-```
-
-3. Build and launch the infrastructure:
-```bash
-make
-```
-
-4. Access your WordPress site at:
-```
-https://yourlogin.42.fr
-```
+[Flow Chart](https://github.com/senthilpoo10/coding-school-projects/inception/main/flowchart.png)
 
 ### 📝 Required Configuration
 | File | Purpose |
@@ -81,6 +61,30 @@ https://yourlogin.42.fr
 | Database Users | Custom admin username (not "admin") |
 | Environment Variables | No hardcoded credentials |
 | Container Isolation | Dedicated containers for each service |
+
+### 🛠️ Installation & Usage
+
+1. Clone the repository:
+```bash
+git clone https://github.com/coding-school-projects/inception.git
+cd inception
+```
+
+2. Configure environment variables:
+```bash
+cp srcs/.env.example srcs/.env
+nano srcs/.env  # Edit with your credentials
+```
+
+3. Build and launch the infrastructure:
+```bash
+make
+```
+
+4. Access your WordPress site at:
+```
+https://yourlogin.42.fr
+```
 
 ## 🧪 Testing Protocol
 
