@@ -146,11 +146,11 @@ echo "127.0.0.1 yourlogin.42.fr" | sudo tee -a /etc/hosts
 
 # 📚 Installation steps for Alpine, VM and SSH:
 
-# Alpine Linux Virtual Machine Setup Guide
+# **Alpine Linux Virtual Machine Setup Guide**
 
-## Table of Contents
+## **Table of Contents**
 1. [Downloading Alpine ISO](#1-downloading-alpine-iso)
-2. [Creating the Virtual Machine](#2-creating-the-virtual-machine) 
+2. [Creating the Virtual Machine](#2-creating-the-virtual-machine)
 3. [Installing Alpine Linux](#3-installing-alpine-linux)
 4. [Initial System Configuration](#4-initial-system-configuration)
 5. [Setting Up Sudo Privileges](#5-setting-up-sudo-privileges)
@@ -161,160 +161,190 @@ echo "127.0.0.1 yourlogin.42.fr" | sudo tee -a /etc/hosts
 
 ---
 
-## 1. Downloading Alpine ISO
+## **1. Downloading Alpine ISO**
+1. Visit the [Alpine Linux Downloads page](https://alpinelinux.org/downloads/)
+2. Under "Older releases", click the provided link
+3. Navigate to version `v3.20/`
+4. Enter the `releases/` directory
+5. Select the `x86_64/` architecture folder
+6. Download `alpine-virt-3.20.0-x86_64.iso`
 
-```bash
-1. Visit https://alpinelinux.org/downloads/
-2. Click "Older releases" link
-3. Navigate to v3.20/
-4. Open releases/ directory  
-5. Select x86_64/ folder
-6. Download alpine-virt-3.20.0-x86_64.iso
-The ISO will be saved in your default downloads folder.
+The ISO file will be saved to your default downloads directory.
 
-2. Creating the Virtual Machine
-VirtualBox Configuration:
-Setting	Value
-Name	Alpine Linux
-Type	Linux
-Version	Other Linux (64-bit)
-Memory	2048MB
-Storage	10GB VDI (Dynamic)
-```bash
-# Post-creation settings:
-1. System → Processor: 2 CPUs
-2. Display → Video Memory: 128MB  
-3. Storage → Attach Alpine ISO
-4. Network → Bridged Adapter
-3. Installing Alpine Linux
-Installation Steps:
-Boot VM and login as root (no password)
+---
 
-Run installer:
+## **2. Creating the Virtual Machine**
+1. Open VirtualBox and click "New"
+2. Configure VM settings:
+   - Name: `Alpine Linux`
+   - Type: Linux
+   - Version: Other Linux (64-bit)
+   - Memory: 2048MB (recommended)
+   - Hard disk: Create virtual hard disk now (VDI, dynamically allocated, 10GB)
+3. After creation, go to VM Settings:
+   - System → Processor: 2 CPUs
+   - Display → Video Memory: 128MB
+   - Storage → Empty IDE: Attach Alpine ISO
+   - Network → Bridged Adapter (or NAT with port forwarding)
 
-```bash
-setup-alpine
-Configuration options:
+---
 
-Keyboard: us
+## **3. Installing Alpine Linux**
+1. Start the VM and login as `root` (no password)
+2. Run the installation:
+   ```sh
+   setup-alpine
+   ```
+3. Follow the interactive setup:
+   - Keyboard: `us` (US QWERTY)
+   - Hostname: `pchennia.42.fr` (or custom name)
+   - Network: DHCP for automatic configuration
+   - Root password: Set to `secret`
+   - Timezone: `Europe/Helsinki`
+   - Mirror: Default (press Enter)
+   - User account:
+     - Username: `pchennia` (or `testuser`)
+     - Password: `secret`
+   - Disk: `sda` with `sys` installation type
+4. Confirm disk erasure with `y`
 
-Hostname: pchennia.42.fr
+---
 
-Network: DHCP
+## **4. Initial System Configuration**
+1. Remove installation media from VirtualBox settings
+2. Reboot the system:
+   ```sh
+   reboot
+   ```
+3. Login with your new user credentials
 
-Root password: secret
+---
 
-Timezone: Europe/Helsinki
+## **5. Setting Up Sudo Privileges**
+1. Switch to root:
+   ```sh
+   su -
+   ```
+2. Enable community repository:
+   ```sh
+   vi /etc/apk/repositories
+   ```
+   Uncomment the community repo line and save.
 
-User: pchennia with password secret
+3. Update and install sudo:
+   ```sh
+   apk update
+   apk add sudo
+   ```
 
-Disk: sda with sys installation
+4. Configure sudo access:
+   ```sh
+   visudo
+   ```
+   Uncomment `%sudo ALL=(ALL:ALL) ALL` and save.
 
-Confirm disk erasure: y
+5. Create sudo group and add user:
+   ```sh
+   addgroup sudo
+   adduser pchennia sudo
+   ```
 
-4. Initial System Configuration
-```bash
-# Remove installation media from VirtualBox
-# Then reboot:
-reboot
-Login with credentials:
+---
 
-Username: pchennia
+## **6. Configuring SSH Access**
+1. Edit SSH configuration:
+   ```sh
+   sudo vi /etc/ssh/sshd_config
+   ```
+   - Change port to `4242`
+   - Set `PermitRootLogin no`
 
-Password: secret
+2. Restart SSH service:
+   ```sh
+   sudo rc-service sshd restart
+   ```
 
-5. Setting Up Sudo Privileges
-```bash
-# Switch to root
-su -
+3. Set up port forwarding in VirtualBox:
+   - Host Port: 4242
+   - Guest Port: 4242
 
-# Enable community repo
-vi /etc/apk/repositories
-# Uncomment community line
+4. Test connection from host:
+   ```sh
+   ssh pchennia@localhost -p 4242
+   ```
 
-# Update and install sudo
-apk update
-apk add sudo
+---
 
-# Configure sudo access
-visudo
-# Uncomment: %sudo ALL=(ALL:ALL) ALL
+## **7. Installing a Graphical Interface**
+1. Install XFCE desktop environment:
+   ```sh
+   sudo apk add xorg-server xfce4 xfce4-terminal lightdm
+   ```
 
-# Create sudo group and add user
-addgroup sudo
-adduser pchennia sudo
-6. Configuring SSH Access
-```bash
-# Edit SSH config
-sudo vi /etc/ssh/sshd_config
-Configuration changes:
+2. Configure display manager:
+   ```sh
+   sudo setup-xorg-base
+   sudo rc-update add lightdm
+   ```
 
-Port 4242
+3. Reboot to start GUI:
+   ```sh
+   sudo reboot
+   ```
 
-PermitRootLogin no
+---
 
-```bash
-# Restart SSH service
-sudo rc-service sshd restart
+## **8. Installing Docker**
+1. Add Docker repository:
+   ```sh
+   sudo vi /etc/apk/repositories
+   ```
+   Uncomment community repository.
 
-# VirtualBox Port Forwarding:
-- Host Port: 4242
-- Guest Port: 4242
-Test connection:
+2. Install Docker components:
+   ```sh
+   sudo apk add docker docker-compose
+   sudo rc-update add docker boot
+   sudo service docker start
+   ```
 
-```bash
-ssh pchennia@localhost -p 4242
-7. Installing a Graphical Interface
-```bash
-# Install XFCE
-sudo apk add xorg-server xfce4 xfce4-terminal lightdm
+3. Add user to docker group:
+   ```sh
+   sudo addgroup pchennia docker
+   ```
 
-# Configure display
-sudo setup-xorg-base
-sudo rc-update add lightdm
+---
 
-# Reboot
-sudo reboot
-8. Installing Docker
-```bash
-# Enable community repo
-sudo vi /etc/apk/repositories
-# Uncomment community line
+## **9. Setting Up Project Environment**
+1. Create project directory:
+   ```sh
+   mkdir ~/inception && cd ~/inception
+   ```
 
-# Install Docker
-sudo apk add docker docker-compose
-sudo rc-update add docker boot
-sudo service docker start
+2. Set proper permissions:
+   ```sh
+   sudo chown -R pchennia:pchennia .
+   sudo chmod 775 .
+   ```
 
-# Add user to docker group
-sudo addgroup pchennia docker
-9. Setting Up Project Environment
-```bash
-# Create project directory
-mkdir ~/inception && cd ~/inception
+3. Install additional tools:
+   ```sh
+   sudo apk add make git curl
+   ```
 
-# Set permissions
-sudo chown -R pchennia:pchennia .
-sudo chmod 775 .
+4. Your development environment is now ready!
 
-# Install tools
-sudo apk add make git curl
-Final Notes
-Security Features:
+---
 
-Non-root user with sudo
+## **Final Notes**
+- Always use `sudo` for administrative commands
+- The system is configured with enhanced security:
+  - Non-root user with sudo privileges
+  - Custom SSH port with root login disabled
+  - Proper file permissions
 
-Custom SSH port (4242)
+For maintenance:
+- Regular updates: `sudo apk update && sudo apk upgrade`
+- Backup important files regularly
 
-Root login disabled
-
-Proper file permissions
-
-Maintenance:
-
-```bash
-# System updates
-sudo apk update && sudo apk upgrade
-
-# Backup important files
-This setup provides a secure, lightweight Alpine Linux environment for development and containerized applications.
+This setup provides a secure, lightweight Alpine Linux environment suitable for development and containerized applications.
