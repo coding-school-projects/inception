@@ -180,7 +180,7 @@ Type	Linux
 Version	Other Linux (64-bit)
 Memory	2048MB
 Storage	10GB VDI (Dynamic)
-bash
+```bash
 # Post-creation settings:
 1. System → Processor: 2 CPUs
 2. Display → Video Memory: 128MB  
@@ -192,7 +192,7 @@ Boot VM and login as root (no password)
 
 Run installer:
 
-sh
+```bash
 setup-alpine
 Configuration options:
 
@@ -213,7 +213,7 @@ Disk: sda with sys installation
 Confirm disk erasure: y
 
 4. Initial System Configuration
-sh
+```bash
 # Remove installation media from VirtualBox
 # Then reboot:
 reboot
@@ -224,7 +224,7 @@ Username: pchennia
 Password: secret
 
 5. Setting Up Sudo Privileges
-sh
+```bash
 # Switch to root
 su -
 
@@ -244,7 +244,7 @@ visudo
 addgroup sudo
 adduser pchennia sudo
 6. Configuring SSH Access
-sh
+```bash
 # Edit SSH config
 sudo vi /etc/ssh/sshd_config
 Configuration changes:
@@ -253,7 +253,7 @@ Port 4242
 
 PermitRootLogin no
 
-sh
+```bash
 # Restart SSH service
 sudo rc-service sshd restart
 
@@ -262,10 +262,10 @@ sudo rc-service sshd restart
 - Guest Port: 4242
 Test connection:
 
-bash
+```bash
 ssh pchennia@localhost -p 4242
 7. Installing a Graphical Interface
-sh
+```bash
 # Install XFCE
 sudo apk add xorg-server xfce4 xfce4-terminal lightdm
 
@@ -276,7 +276,7 @@ sudo rc-update add lightdm
 # Reboot
 sudo reboot
 8. Installing Docker
-sh
+```bash
 # Enable community repo
 sudo vi /etc/apk/repositories
 # Uncomment community line
@@ -289,7 +289,7 @@ sudo service docker start
 # Add user to docker group
 sudo addgroup pchennia docker
 9. Setting Up Project Environment
-sh
+```bash
 # Create project directory
 mkdir ~/inception && cd ~/inception
 
@@ -312,7 +312,7 @@ Proper file permissions
 
 Maintenance:
 
-sh
+```bash
 # System updates
 sudo apk update && sudo apk upgrade
 
