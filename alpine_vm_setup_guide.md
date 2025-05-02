@@ -242,3 +242,30 @@ The above is line just copy the folder from local system to VM machine using scp
 ssh localhost -p 2288
 ```
 The above line is connect to the VM machine from local terminal. So We can local terminal as the VM's terminal.
+
+
+.
+├── Makefile
+├── README.md
+└── srcs
+    ├── .env
+    ├── docker-compose.yml
+    └── requirements
+        ├── mariadb
+        │   ├── Dockerfile
+        │   ├── conf
+        │   │   └── mariadb-server.cnf
+        │   ├── tools
+        │       └── script.sh
+        │   
+        ├── nginx
+        │   ├── Dockerfile
+        │   └── conf
+        │       └── nginx.conf
+        └── wordpress
+            ├── Dockerfile
+            ├── conf
+            │   └── www.conf
+            ├── tools
+                └── script.sh
+
