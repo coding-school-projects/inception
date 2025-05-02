@@ -233,3 +233,12 @@ sudo reboot
 
 ## ✅ Ready for Dockerfile and Project Code
 You can now start writing your Dockerfile and setup project code within the `inception` folder inside your VM or local system and sync using `scp`.
+```bash
+scp -P 2288 -r /home/pchennia/Inception localhost:/home/pchennia
+```
+The above is line just copy the folder from local system to VM machine using scp command
+
+```bash
+ssh localhost -p 2288
+```
+The above line is connect to the VM machine from local terminal. So We can local terminal as the VM's terminal.
