@@ -144,13 +144,13 @@ echo "127.0.0.1 yourlogin.42.fr" | sudo tee -a /etc/hosts
 - Alpine/Debian must be used as base images
 
 
-## 📚 Installation steps for Alpine, VM and SSH:
+# 📚 Installation steps for Alpine, VM and SSH:
 
 # Alpine Linux Virtual Machine Setup Guide
 
 ## Table of Contents
 1. [Downloading Alpine ISO](#1-downloading-alpine-iso)
-2. [Creating the Virtual Machine](#2-creating-the-virtual-machine)
+2. [Creating the Virtual Machine](#2-creating-the-virtual-machine) 
 3. [Installing Alpine Linux](#3-installing-alpine-linux)
 4. [Initial System Configuration](#4-initial-system-configuration)
 5. [Setting Up Sudo Privileges](#5-setting-up-sudo-privileges)
@@ -162,183 +162,159 @@ echo "127.0.0.1 yourlogin.42.fr" | sudo tee -a /etc/hosts
 ---
 
 ## 1. Downloading Alpine ISO
-1. Visit the [Alpine Linux Downloads page](https://alpinelinux.org/downloads/)
-2. Under "Older releases", click the provided link
-3. Navigate to version `v3.20/`
-4. Enter the `releases/` directory
-5. Select the `x86_64/` architecture folder
-6. Download `alpine-virt-3.20.0-x86_64.iso`
 
-The ISO file will be saved to your default downloads directory.
+```bash
+1. Visit https://alpinelinux.org/downloads/
+2. Click "Older releases" link
+3. Navigate to v3.20/
+4. Open releases/ directory  
+5. Select x86_64/ folder
+6. Download alpine-virt-3.20.0-x86_64.iso
+The ISO will be saved in your default downloads folder.
 
----
+2. Creating the Virtual Machine
+VirtualBox Configuration:
+Setting	Value
+Name	Alpine Linux
+Type	Linux
+Version	Other Linux (64-bit)
+Memory	2048MB
+Storage	10GB VDI (Dynamic)
+bash
+# Post-creation settings:
+1. System → Processor: 2 CPUs
+2. Display → Video Memory: 128MB  
+3. Storage → Attach Alpine ISO
+4. Network → Bridged Adapter
+3. Installing Alpine Linux
+Installation Steps:
+Boot VM and login as root (no password)
 
-## 2. Creating the Virtual Machine
-1. Open VirtualBox and click "New"
-2. Configure VM settings:
-   - Name: `Alpine Linux`
-   - Type: Linux
-   - Version: Other Linux (64-bit)
-   - Memory: 2048MB (recommended)
-   - Hard disk: Create virtual hard disk now (VDI, dynamically allocated, 10GB)
-3. After creation, go to VM Settings:
-   - System → Processor: 2 CPUs
-   - Display → Video Memory: 128MB
-   - Storage → Empty IDE: Attach Alpine ISO
-   - Network → Bridged Adapter (or NAT with port forwarding)
+Run installer:
 
----
+sh
+setup-alpine
+Configuration options:
 
-## 3. Installing Alpine Linux
-1. Start the VM and login as `root` (no password)
-2. Run the installation:
-   ```sh
-   setup-alpine
-Follow the interactive setup:
+Keyboard: us
 
-Keyboard: us (US QWERTY)
+Hostname: pchennia.42.fr
 
-Hostname: pchennia.42.fr (or custom name)
+Network: DHCP
 
-Network: DHCP for automatic configuration
-
-Root password: Set to secret
+Root password: secret
 
 Timezone: Europe/Helsinki
 
-Mirror: Default (press Enter)
+User: pchennia with password secret
 
-User account:
+Disk: sda with sys installation
 
-Username: pchennia (or testuser)
+Confirm disk erasure: y
+
+4. Initial System Configuration
+sh
+# Remove installation media from VirtualBox
+# Then reboot:
+reboot
+Login with credentials:
+
+Username: pchennia
 
 Password: secret
 
-Disk: sda with sys installation type
-
-Confirm disk erasure with y
-
-4. Initial System Configuration
-Remove installation media from VirtualBox settings
-
-Reboot the system:
-
-sh
-reboot
-Login with your new user credentials
-
 5. Setting Up Sudo Privileges
-Switch to root:
-
 sh
+# Switch to root
 su -
-Enable community repository:
 
-sh
+# Enable community repo
 vi /etc/apk/repositories
-Uncomment the community repo line and save.
+# Uncomment community line
 
-Update and install sudo:
-
-sh
+# Update and install sudo
 apk update
 apk add sudo
-Configure sudo access:
 
-sh
+# Configure sudo access
 visudo
-Uncomment %sudo ALL=(ALL:ALL) ALL and save.
+# Uncomment: %sudo ALL=(ALL:ALL) ALL
 
-Create sudo group and add user:
-
-sh
+# Create sudo group and add user
 addgroup sudo
 adduser pchennia sudo
 6. Configuring SSH Access
-Edit SSH configuration:
-
 sh
+# Edit SSH config
 sudo vi /etc/ssh/sshd_config
-Change port to 4242
+Configuration changes:
 
-Set PermitRootLogin no
+Port 4242
 
-Restart SSH service:
+PermitRootLogin no
 
 sh
+# Restart SSH service
 sudo rc-service sshd restart
-Set up port forwarding in VirtualBox:
 
-Host Port: 4242
+# VirtualBox Port Forwarding:
+- Host Port: 4242
+- Guest Port: 4242
+Test connection:
 
-Guest Port: 4242
-
-Test connection from host:
-
-sh
+bash
 ssh pchennia@localhost -p 4242
 7. Installing a Graphical Interface
-Install XFCE desktop environment:
-
 sh
+# Install XFCE
 sudo apk add xorg-server xfce4 xfce4-terminal lightdm
-Configure display manager:
 
-sh
+# Configure display
 sudo setup-xorg-base
 sudo rc-update add lightdm
-Reboot to start GUI:
 
-sh
+# Reboot
 sudo reboot
 8. Installing Docker
-Add Docker repository:
-
 sh
+# Enable community repo
 sudo vi /etc/apk/repositories
-Uncomment community repository.
+# Uncomment community line
 
-Install Docker components:
-
-sh
+# Install Docker
 sudo apk add docker docker-compose
 sudo rc-update add docker boot
 sudo service docker start
-Add user to docker group:
 
-sh
+# Add user to docker group
 sudo addgroup pchennia docker
 9. Setting Up Project Environment
-Create project directory:
-
 sh
+# Create project directory
 mkdir ~/inception && cd ~/inception
-Set proper permissions:
 
-sh
+# Set permissions
 sudo chown -R pchennia:pchennia .
 sudo chmod 775 .
-Install additional tools:
 
-sh
+# Install tools
 sudo apk add make git curl
-Your development environment is now ready!
-
 Final Notes
-Always use sudo for administrative commands
+Security Features:
 
-The system is configured with enhanced security:
+Non-root user with sudo
 
-Non-root user with sudo privileges
+Custom SSH port (4242)
 
-Custom SSH port with root login disabled
+Root login disabled
 
 Proper file permissions
 
-For maintenance:
+Maintenance:
 
-Regular updates: sudo apk update && sudo apk upgrade
+sh
+# System updates
+sudo apk update && sudo apk upgrade
 
-Backup important files regularly
-
-This setup provides a secure, lightweight Alpine Linux environment suitable for development and containerized applications.
+# Backup important files
+This setup provides a secure, lightweight Alpine Linux environment for development and containerized applications.
