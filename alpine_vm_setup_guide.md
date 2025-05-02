@@ -243,7 +243,7 @@ ssh localhost -p 2288
 ```
 The above line is connect to the VM machine from local terminal. So We can local terminal as the VM's terminal.
 
-
+```
 .
 ├── Makefile
 ├── README.md
@@ -268,4 +268,6 @@ The above line is connect to the VM machine from local terminal. So We can local
             │   └── www.conf
             ├── tools
                 └── script.sh
+
+```
 
